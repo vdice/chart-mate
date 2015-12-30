@@ -211,14 +211,18 @@ function gke::setup {
 }
 
 function save-environment {
-  mkdir -p ${HOME}/.chart-mate
-  cat > ${HOME}/.chart-mate/env <<EOF
+  mkdir -p "${HOME}/.chart-mate"
+  cat > "${HOME}/.chart-mate/env" <<EOF
 export K8S_CLUSTER_NAME="${K8S_CLUSTER_NAME}"
 EOF
 }
 
 function load-environment {
   if [ -f "${HOME}/.chart-mate/env" ]; then
-    source ${HOME}/.chart-mate/env
+    source "${HOME}/.chart-mate/env"
   fi
+}
+
+function delete-environment {
+  rm -f "${HOME}/.chart-mate/env"
 }

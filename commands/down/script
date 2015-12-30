@@ -61,3 +61,5 @@ rerun_options_parse "$@"
 load-config
 
 gke::destroy
+
+delete-environment
