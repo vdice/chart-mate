@@ -4,3 +4,5 @@ include makeup.mk
 
 include $(MAKEUP_DIR)/makeup-kit-info/main.mk
 
+build:
+	@./build.sh
