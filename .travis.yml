@@ -7,6 +7,8 @@ branches:
 
 script: make build
 
+before_deploy: make prep-bintray-json
+
 deploy:
 - provider: bintray
   file: _scripts/ci/bintray-ci.json
