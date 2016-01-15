@@ -10,7 +10,7 @@
   "files": [
     {
       "includePattern": "build/rerun",
-      "uploadPattern": "$1"
+      "uploadPattern": "rerun"
     }
   ],
   "publish": true
