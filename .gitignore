@@ -1,3 +1,4 @@
 /.bin
 /build
 /tmp
+/_scripts/ci/bintray-ci.json

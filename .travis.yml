@@ -1,0 +1,17 @@
+language: shell
+
+branches:
+  only:
+    - master
+    - /^v?(?:[0-9]+\.){2}[0-9]+.*$/
+
+script: make build
+
+deploy:
+- provider: bintray
+  file: _scripts/ci/bintray-ci.json
+  user: sgoings
+  key:
+    secure: "kOCR0ZPFI/CSKMUZCH4YlmRbqO0+Wxx/QLtfUMkkU9HpsoM6lv77Rm9a7+J11PNMkZ+ngMK//qlmytkqa8VMXWe+t7ELAUGS5cdFP6YimH6VZgSN+QYEpH/IrgkEqXDMQ4WdMiuZcl8B9TacJjyo2j1TYn9NiCVoKIObTX4KQCe1+qbSpBZOE9Ru3Tox2WACoTDQF45HV59IZieTw8eCnQveCkt+dgcpHZeSeiPxG567K9ad4OdpTocSjro18XkA3rMKrGT5foeJjipZVPakHboaT/vyAZpMgGiDWBlEoyB98RiLTFSpqGwBRoLPLZdybAjLGbM8J7+PPxxcCNURkyUNZ+80yQkwP+3lgyJuTnCCTvbyO1gPZushPmjRSr/C3mX7cHIp+/62NgAJMFJn09AEyhKMNwUbaJ5oM0KP7BARIzpdD5SB8sVu3yG/t4uQgVPzZstgchwsaYUeBQxI2IXBV6LtRsV7ZqnPTq8S+AhDmn3R/10LB+z0tWyxuvEWxsZIHFGUWjcaxqzoQEw6UOqoUnVVZnRMX6/yOII5048bKegV7IbzbDEDJ8yk0sK1Sfn1p2bYDtlDCeRYzH7l63xI/eHVNYKKxymkbXRIRL8/S7mT4Sl9OLX39EllwS/1U7VebunBMhcD5eEGewVc3YLP3cHBmHZC0Oc2F7KJSrc="
+  on:
+    all_branches: true

@@ -1,0 +1,17 @@
+{
+  "package": {
+    "name": "chart-mate",
+    "repo": "rerun-modules",
+    "subject": "sgoings"
+  },
+  "version": {
+    "name": "0.0.0"
+  },
+  "files": [
+    {
+      "includePattern": "build/rerun",
+      "uploadPattern": "$1"
+    }
+  ],
+  "publish": true
+}

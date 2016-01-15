@@ -2,6 +2,8 @@
 
 set -eo pipefail
 
+cd "$(dirname "$0")"
+
 temp_dir="tmp"
 rerun_bin=""
 
