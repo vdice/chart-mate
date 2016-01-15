@@ -2,13 +2,11 @@
 
 set -eo pipefail
 
-cd "$(dirname "$0")"
-
 temp_dir="tmp"
 rerun_bin=""
 
 function install-rerun {
-  if [ -d ${temp_dir} ]; then
+  if [ -d "${temp_dir}" ]; then
     return 0
   fi
 
@@ -22,6 +20,7 @@ function install-rerun {
   )
 }
 
+install-rerun
 rerun_bin="$(find ${temp_dir} -name rerun)"
 rerun_dir="$(dirname ${rerun_bin})"
 

@@ -8,7 +8,7 @@ VERSION := $(shell git describe --tags --abbrev=0 2>/dev/null || echo 0.1.0-dev)
 
 .PHONY: build
 build:
-	@./build.sh
+	@_scripts/build.sh
 
 .PHONY: prep-bintray-json
 prep-bintray-json:
