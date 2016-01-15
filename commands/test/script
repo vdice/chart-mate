@@ -61,6 +61,7 @@ rerun_options_parse "$@"
 
 load-config
 
+gke::setup
 helm::setup
 
-helm::test
+$@

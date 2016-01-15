@@ -26,14 +26,16 @@ fi
 
 function load-config {
   load-environment
+  echo $RERUN_MODULE_DIR
   source "${RERUN_MODULE_DIR}/lib/config.sh"
+  echo loaded config
 }
 
 function move-files {
   helm doctor # need proper ~/.helm directory structure and config.yml
 
   log-info "Staging chart directory"
-  rsync -av . ${HOME}/.helm/cache/charts/
+  rsync -av . ${HOME}/.helm/cache/charts/ --exclude='.git/'
 }
 
 function helm::setup {
@@ -47,8 +49,6 @@ function helm::setup {
     curl -s https://get.helm.sh | bash
   )
   export PATH="$(pwd)/.bin:${PATH}"
-
-  move-files
 }
 
 function helm::get-changed-charts {
