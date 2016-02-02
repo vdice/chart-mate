@@ -26,9 +26,7 @@ fi
 
 function load-config {
   load-environment
-  echo $RERUN_MODULE_DIR
   source "${RERUN_MODULE_DIR}/lib/config.sh"
-  echo loaded config
 }
 
 function move-files {
