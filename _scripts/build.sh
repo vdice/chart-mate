@@ -29,4 +29,4 @@ export RERUN_MODULES="$(dirname $(pwd)):${rerun_dir}/modules"
 
 mkdir -p build
 
-rerun stubbs:archive --modules chart-mate -f build/rerun
+rerun stubbs:archive --modules chart-mate -f build/rerun-${VERSION}

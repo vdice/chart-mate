@@ -4,7 +4,7 @@ include makeup.mk
 
 include $(MAKEUP_DIR)/makeup-bag-deis/info.mk
 
-VERSION := $(shell git describe --tags --abbrev=0 2>/dev/null || echo 0.1.1-dev)
+export VERSION := $(shell git describe --tags --abbrev=0 2>/dev/null || echo 0.1.1-dev)
 
 .PHONY: build
 build:

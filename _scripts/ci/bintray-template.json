@@ -9,8 +9,8 @@
   },
   "files": [
     {
-      "includePattern": "build/rerun",
-      "uploadPattern": "rerun"
+      "includePattern": "build/rerun-(.*)",
+      "uploadPattern": "rerun-$1"
     }
   ],
   "publish": true
