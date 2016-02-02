@@ -2,7 +2,7 @@
 include makeup.mk
 # makeup-managed:end
 
-include $(MAKEUP_DIR)/makeup-kit-info/main.mk
+include $(MAKEUP_DIR)/makeup-bag-deis/info.mk
 
 VERSION := $(shell git describe --tags --abbrev=0 2>/dev/null || echo 0.1.0-dev)
 
