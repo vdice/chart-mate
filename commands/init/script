@@ -57,6 +57,8 @@ rerun_options_parse "$@"
 
 load-config
 
+download-jq
+
 gke::setup
 
 helm::setup

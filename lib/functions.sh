@@ -118,7 +118,7 @@ EOF
 
 function download-jq {
   if ! command -v jq &>/dev/null && [ "${PLATFORM}" == linux ]; then
-    echo "Downloading jq..."
+    log-lifecycle "Installing jq into ${BIN_DIR}"
     mkdir -p .bin
     curl -Ls https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 > .bin/jq
     chmod +x .bin/jq
