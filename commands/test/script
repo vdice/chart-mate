@@ -86,3 +86,4 @@ while ! return-pod-exit-code "deis-tests" &> /dev/null; do
 done
 
 return-pod-exit-code "deis-tests"
+exit $(return-pod-exit-code "deis-tests" 2>/dev/null)

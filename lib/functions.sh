@@ -243,7 +243,7 @@ function return-pod-exit-code {
   local namespace="${2:-deis}"
   local status
 
-  log-lifecycle "Waiting for pod exit code..."
+  log-lifecycle "Waiting for pod exit code..." 1>&2
 
   local timeout_secs=15
   local increment_secs=5
