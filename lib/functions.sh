@@ -73,6 +73,8 @@ function log-warn {
 }
 
 function save-environment {
+  log-lifecycle "Environment saved as ${K8S_CLUSTER_NAME}"
+
   mkdir -p "${HOME}/.chart-mate"
   cat > "${HOME}/.chart-mate/env" <<EOF
 export K8S_CLUSTER_NAME="${K8S_CLUSTER_NAME}"
@@ -117,11 +119,19 @@ EOF
 }
 
 function download-jq {
-  if ! command -v jq &>/dev/null && [ "${PLATFORM}" == linux ]; then
+  if ! command -v jq &>/dev/null; then
     log-lifecycle "Installing jq into ${BIN_DIR}"
-    mkdir -p .bin
-    curl -Ls https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 > .bin/jq
-    chmod +x .bin/jq
+
+    local platform
+    if [ "${PLATFORM}" == linux ]; then
+      platform="linux64"
+    else
+      platform="osx-amd64"
+    fi
+
+    mkdir -p "${BIN_DIR}"
+    curl -Ls "https://github.com/stedolan/jq/releases/download/jq-1.5/jq-${platform}" > "${BIN_DIR}/jq"
+    chmod +x "${BIN_DIR}/jq"
   fi
 }
 
