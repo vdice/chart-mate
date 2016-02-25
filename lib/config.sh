@@ -12,8 +12,6 @@ CHART_MATE_ENV_ROOT="${HOME}/.chart-mate/${K8S_CLUSTER_NAME}"
 BIN_DIR="${CHART_MATE_ENV_ROOT}/.bin"
 export SECRETS_DIR="${CHART_MATE_ENV_ROOT}"
 
-GCLOUD_CREDENTIALS_FILE="${GCLOUD_CREDENTIALS_FILE:-"${SECRETS_DIR}/gcloud-credentials.json"}"
-
 # Text color variables
 txtund=$(tput sgr 0 1)          # Underline
 txtbld=$(tput bold)             # Bold
