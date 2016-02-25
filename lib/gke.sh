@@ -1,10 +1,11 @@
 function gke::install {
-  log-lifecycle "Installing GCE command line tools"
   if [ ! -d "${GOOGLE_SDK_DIR}" ]; then
+    log-lifecycle "Installing GCE command line tools"
     export CLOUDSDK_CORE_DISABLE_PROMPTS=1
     curl https://sdk.cloud.google.com | bash
   fi
 
+  log-lifecycle "Configuring GCE command line tools"
   export PATH="${GOOGLE_SDK_DIR}/bin:$PATH"
   gcloud -q components update kubectl
 }

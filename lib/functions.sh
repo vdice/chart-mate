@@ -123,7 +123,7 @@ function download-jq {
     log-lifecycle "Installing jq into ${BIN_DIR}"
 
     local platform
-    if [ "${PLATFORM}" == linux ]; then
+    if [ "${PLATFORM}" == "linux" ]; then
       platform="linux64"
     else
       platform="osx-amd64"

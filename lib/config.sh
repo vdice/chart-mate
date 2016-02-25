@@ -1,3 +1,6 @@
+PLATFORM="$(uname | tr '[:upper:]' '[:lower:]')"
+ARCH="$(uname -m)"
+
 export HELM_ARTIFACT_REPO="${HELM_ARTIFACT_REPO:-helm-ci}"
 CLUSTER_NAME="${CLUSTER_NAME:-helm-testing}"
 GOOGLE_SDK_DIR="${HOME}/google-cloud-sdk"
