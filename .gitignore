@@ -1,4 +1,6 @@
-/.bin
+.bin
 /build
 /tmp
 /_scripts/ci/bintray-ci.json
+/tests/rerun
+/logs

@@ -2,6 +2,8 @@
 include makeup.mk
 # makeup-managed:end
 
+SHORT_NAME := rerun
+
 include $(MAKEUP_DIR)/makeup-bag-deis/info.mk
 
 export VERSION := $(shell git describe --tags --abbrev=0 2>/dev/null || echo 0.1.1-dev)
@@ -20,3 +22,9 @@ else
 	@jq '.version.name |= "$(VERSION)"' _scripts/ci/bintray-template.json \
 		> _scripts/ci/bintray-ci.json
 endif
+
+test:
+	rerun stubbs:test --module chart-mate
+
+docker-build:
+	docker build -t "${SHORT_NAME}:${VERSION}" . 

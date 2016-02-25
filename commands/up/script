@@ -38,7 +38,7 @@ trap 'rerun_die $? "*** command failed: chart-mate:up. ***"' ERR
 # [set]: http://ss64.com/bash/set.html
 # [pipefail]: http://www.gnu.org/software/bash/manual/html_node/Pipelines.html
 
-set -eo nounset -o pipefail
+set -eo pipefail
 
 # Command variables
 # -----------------
@@ -61,10 +61,4 @@ rerun_options_parse "$@"
 
 load-config
 
-gke::setup
-
 gke::create-cluster
-
-helm::setup
-
-save-environment

@@ -1,17 +1,18 @@
 export HELM_ARTIFACT_REPO="${HELM_ARTIFACT_REPO:-helm-ci}"
 CLUSTER_NAME="${CLUSTER_NAME:-helm-testing}"
 GOOGLE_SDK_DIR="${HOME}/google-cloud-sdk"
-export HELM_BIN="${RERUN_MODULE_DIR}/helm.bin"
-export SECRETS_DIR="secrets"
 SKIP_DESTROY=${SKIP_DESTROY:-false}
-
 export HEALTHCHECK_TIMEOUT_SEC=120
-
-GCLOUD_CREDENTIALS_FILE="${GCLOUD_CREDENTIALS_FILE:-"${SECRETS_DIR}/gcloud-credentials.json"}"
 
 GCLOUD_PROJECT_ID="${GCLOUD_PROJECT_ID:-${CLUSTER_NAME}}"
 K8S_ZONE="${K8S_ZONE:-us-central1-b}"
 K8S_CLUSTER_NAME="${K8S_CLUSTER_NAME:-${GCLOUD_PROJECT_ID}-$(openssl rand -hex 2)}"
+
+CHART_MATE_ENV_ROOT="${HOME}/.chart-mate/${K8S_CLUSTER_NAME}"
+BIN_DIR="${CHART_MATE_ENV_ROOT}/.bin"
+export SECRETS_DIR="${CHART_MATE_ENV_ROOT}"
+
+GCLOUD_CREDENTIALS_FILE="${GCLOUD_CREDENTIALS_FILE:-"${SECRETS_DIR}/gcloud-credentials.json"}"
 
 # Text color variables
 txtund=$(tput sgr 0 1)          # Underline
@@ -24,3 +25,12 @@ txtrst=$(tput sgr0)             # Reset
 pass="${bldblu}-->${txtrst}"
 warn="${bldred}-->${txtrst}"
 ques="${bldblu}???${txtrst}"
+
+export GCLOUD_CREDENTIALS_FILE="${GCLOUD_CREDENTIALS_FILE:-${HOME}/.secrets/helm-testing-creds.json}"
+
+if [ ! -z "${JENKINS_URL}" ]; then
+  mkdir -p "${HOME}/.secrets/"
+  echo ${GCLOUD_CREDENTIALS} > "${GCLOUD_CREDENTIALS_FILE}"
+fi
+
+export PATH="${CHART_MATE_ENV_ROOT}/.bin:${GOOGLE_SDK_DIR}/bin:$PATH"
