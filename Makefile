@@ -27,4 +27,4 @@ test:
 	rerun stubbs:test --module chart-mate
 
 docker-build:
-	docker build -t "${SHORT_NAME}:${VERSION}" . 
+	docker build -t "${SHORT_NAME}:${VERSION}" .
