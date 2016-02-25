@@ -170,7 +170,43 @@ function download-chart-mate {
 function check-all-pods-running {
   local namespace="${1:-deis}"
 
-  kubectl --namespace="${name}" get pods -o json | jq -r ".items[].status.phase" | grep -v "Succeeded" | grep -qv "Running"
+  kubectl --namespace="${namespace}" get pods -o json | jq -r ".items[].status.phase" | grep -v "Succeeded" | grep -qv "Running"
+}
+
+function check-pod-running {
+  local name="${1}"
+  local namespace="${2:-deis}"
+
+  kubectl --namespace="${namespace}" get pods "${name}" -o json | jq -r ".status.phase" | grep -v "Succeeded" | grep -qv "Running"
+}
+
+function wait-for-pod {
+  local name="${1}"
+
+  log-lifecycle "Waiting for ${name} to be running"
+
+  local timeout_secs=180
+  local increment_secs=1
+  local waited_time=0
+
+  local command_output
+  while [ ${waited_time} -lt ${timeout_secs} ]; do
+
+    if ! check-pod-running "${name}"; then
+      log-lifecycle "${name} is running!"
+      return 0
+    fi
+
+    sleep ${increment_secs}
+    (( waited_time += ${increment_secs} ))
+
+    if [ ${waited_time} -ge ${timeout_secs} ]; then
+      log-warn "${name} pod didn't start."
+      return 1
+    fi
+
+    echo -n . 1>&2
+  done
 }
 
 function wait-for-all-pods {
@@ -209,7 +245,7 @@ function return-pod-exit-code {
 
   log-lifecycle "Waiting for pod exit code..."
 
-  local timeout_secs=180
+  local timeout_secs=15
   local increment_secs=5
   local waited_time=0
 
@@ -218,7 +254,7 @@ function return-pod-exit-code {
 
     command_output="$(kubectl get po "${name}" -a --namespace="${namespace}" -o json | jq -r '.status.containerStatuses[0].state.terminated.exitCode')"
     if [ "${command_output}" != "null" ]; then
-      echo "${command_output}"
+      echo ${command_output}
       return 0
     fi
 
@@ -226,8 +262,7 @@ function return-pod-exit-code {
     (( waited_time += ${increment_secs} ))
 
     if [ ${waited_time} -ge ${timeout_secs} ]; then
-      log-warn "Exit code not returned."
-      echo
+      log-warn "Exit code not returned." 1>&2
       return 1
     fi
 

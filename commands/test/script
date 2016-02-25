@@ -73,6 +73,16 @@ fi
 helm fetch deis/deis-tests
 helm uninstall -n deis -y deis-tests; helm install deis-tests
 
-wait-for-all-pods "deis"
+wait-for-pod "deis-tests"
 kubectl --namespace=deis logs -f deis-tests
+
+iterations=0
+while ! return-pod-exit-code "deis-tests" &> /dev/null; do
+  log-info "Reloading kubectl logs (#${iterations})"
+
+  kubectl --namespace=deis logs -f deis-tests
+
+  let iterations++
+done
+
 return-pod-exit-code "deis-tests"
