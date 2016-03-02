@@ -78,6 +78,13 @@ else
 fi
 
 helm fetch deis/deis-dev
-helm fetch deis/deis-logger
 helm generate deis-dev
 helm install deis-dev
+
+if [ ! -z $DEIS_LOGGER ]; then
+  helm fetch deis/deis-logger
+  helm install deis-logger
+  # re-jigger deis-workflow pods so it picks up the logger's settings
+  kubectl --namespace=deis scale --replicas=0 replicationcontroller deis-workflow
+  kubectl --namespace=deis scale --replicas=1 replicationcontroller deis-workflow
+fi
