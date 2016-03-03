@@ -60,15 +60,6 @@ load-config
 trap exit-trap EXIT
 
 mkdir -p ~/.helm/cache/deis/deis-tests
-if [ ! -z $CI ]; then
-  echo "INJECTING VERSIONS!"
-  echo "-------------------"
-  bumpver-if-set "deis-tests" "deis-e2e" "${WORKFLOW_E2E_SHA}"
-  echo "-------------------"
-  rsync -av deis-tests/ ${HOME}/.helm/cache/deis/deis-tests > /dev/null
-else
-  helm repo add deis https://github.com/deis/charts.git || true
-fi
 
 helm fetch deis/deis-tests
 helm uninstall -n deis -y deis-tests; helm install deis-tests
