@@ -61,6 +61,22 @@ rm -rf ${HOME}/.helm
 helm doctor
 mkdir -p ${HOME}/.helm/cache/charts/deis
 
+if [ ! -z $CI ]; then
+  echo "INJECTING VERSIONS!"
+  echo "-------------------"
+  bumpver-if-set "deis-logger" "logger" "${LOGGER_GIT_SHA}"
+  bumpver-if-set "deis-dev" "builder" "${BUILDER_GIT_SHA}"
+  bumpver-if-set "deis-dev" "minio" "${MINIO_GIT_SHA}"
+  bumpver-if-set "deis-dev" "postgres" "${POSTGRES_GIT_SHA}"
+  bumpver-if-set "deis-dev" "registry" "${REGISTRY_GIT_SHA}"
+  bumpver-if-set "deis-dev" "router" "${ROUTER_GIT_SHA}"
+  bumpver-if-set "deis-dev" "workflow" "${WORKFLOW_GIT_SHA}"
+  echo "-------------------"
+  rsync -av . ${HOME}/.helm/cache/deis/ > /dev/null
+else
+  helm repo add deis https://github.com/deis/charts.git || true
+fi
+
 helm fetch deis/deis-dev
 helm generate deis-dev
 helm install deis-dev
