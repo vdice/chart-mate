@@ -71,6 +71,9 @@ if [ ! -z $CI ]; then
   bumpver-if-set "deis-dev" "registry" "${REGISTRY_GIT_SHA}"
   bumpver-if-set "deis-dev" "router" "${ROUTER_GIT_SHA}"
   bumpver-if-set "deis-dev" "workflow" "${WORKFLOW_GIT_SHA}"
+  bumpver-if-set "deis-dev" "slugbuilder" "${SLUGBUILDER_GIT_SHA}"
+  bumpver-if-set "deis-dev" "slugrunner" "${SLUGRUNNER_GIT_SHA}"
+  bumpver-if-set "deis-dev" "dockerbuilder" "${DOCKERBUILDER_GIT_SHA}" 
   echo "-------------------"
   rsync -av . ${HOME}/.helm/cache/deis/ > /dev/null
 else
