@@ -40,7 +40,7 @@ function exit-trap {
 
     kubectl get po,rc,svc -a --namespace=deis &> "logs/statuses-${timestamp}.log"
 
-    local components="deis-router deis-builder deis-database deis-minio deis-registry deis-router deis-workflow"
+    local components="deis-router deis-builder deis-database deis-minio deis-registry deis-router deis-controller"
     local component
     for component in ${components}; do
       kubectl describe po -l app=${component} --namespace=deis &> "logs/${component}-describe-${timestamp}.log"
