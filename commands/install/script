@@ -64,6 +64,7 @@ mkdir -p ${HOME}/.helm/cache/charts/deis
 if [ ! -z $CI ]; then
   echo "INJECTING VERSIONS!"
   echo "-------------------"
+  bumpver-if-set "deis-logger" "fluentd" "${FLUENTD_GIT_SHA}"
   bumpver-if-set "deis-logger" "logger" "${LOGGER_GIT_SHA}"
   bumpver-if-set "${WORKFLOW_CHART}" "builder" "${BUILDER_GIT_SHA}"
   bumpver-if-set "${WORKFLOW_CHART}" "minio" "${MINIO_GIT_SHA}"
