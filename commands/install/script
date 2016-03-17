@@ -65,29 +65,29 @@ if [ ! -z $CI ]; then
   echo "INJECTING VERSIONS!"
   echo "-------------------"
   bumpver-if-set "deis-logger" "logger" "${LOGGER_GIT_SHA}"
-  bumpver-if-set "deis-dev" "builder" "${BUILDER_GIT_SHA}"
-  bumpver-if-set "deis-dev" "minio" "${MINIO_GIT_SHA}"
-  bumpver-if-set "deis-dev" "postgres" "${POSTGRES_GIT_SHA}"
-  bumpver-if-set "deis-dev" "registry" "${REGISTRY_GIT_SHA}"
-  bumpver-if-set "deis-dev" "router" "${ROUTER_GIT_SHA}"
-  bumpver-if-set "deis-dev" "workflow" "${WORKFLOW_GIT_SHA}"
-  bumpver-if-set "deis-dev" "slugbuilder" "${SLUGBUILDER_GIT_SHA}"
-  bumpver-if-set "deis-dev" "slugrunner" "${SLUGRUNNER_GIT_SHA}"
-  bumpver-if-set "deis-dev" "dockerbuilder" "${DOCKERBUILDER_GIT_SHA}" 
+  bumpver-if-set "${WORKFLOW_CHART}" "builder" "${BUILDER_GIT_SHA}"
+  bumpver-if-set "${WORKFLOW_CHART}" "minio" "${MINIO_GIT_SHA}"
+  bumpver-if-set "${WORKFLOW_CHART}" "postgres" "${POSTGRES_GIT_SHA}"
+  bumpver-if-set "${WORKFLOW_CHART}" "registry" "${REGISTRY_GIT_SHA}"
+  bumpver-if-set "${WORKFLOW_CHART}" "router" "${ROUTER_GIT_SHA}"
+  bumpver-if-set "${WORKFLOW_CHART}" "controller" "${CONTROLLER_GIT_SHA}"
+  bumpver-if-set "${WORKFLOW_CHART}" "slugbuilder" "${SLUGBUILDER_GIT_SHA}"
+  bumpver-if-set "${WORKFLOW_CHART}" "slugrunner" "${SLUGRUNNER_GIT_SHA}"
+  bumpver-if-set "${WORKFLOW_CHART}" "dockerbuilder" "${DOCKERBUILDER_GIT_SHA}"
   echo "-------------------"
   rsync -av . ${HOME}/.helm/cache/deis/ > /dev/null
 else
   helm repo add deis https://github.com/deis/charts.git || true
 fi
 
-helm fetch deis/deis-dev
-helm generate deis-dev
-helm install deis-dev
+helm fetch deis/"${WORKFLOW_CHART}"
+helm generate "${WORKFLOW_CHART}"
+helm install "${WORKFLOW_CHART}"
 
 if [ ! -z $DEIS_LOGGER ]; then
   helm fetch deis/deis-logger
   helm install deis-logger
-  # re-jigger deis-workflow pods so it picks up the logger's settings
-  kubectl --namespace=deis scale --replicas=0 replicationcontroller deis-workflow
-  kubectl --namespace=deis scale --replicas=1 replicationcontroller deis-workflow
+  # re-jigger deis-controller pods so it picks up the logger's settings
+  kubectl --namespace=deis scale --replicas=0 replicationcontroller deis-controller
+  kubectl --namespace=deis scale --replicas=1 replicationcontroller deis-controller
 fi

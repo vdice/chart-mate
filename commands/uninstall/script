@@ -57,4 +57,4 @@ rerun_options_parse "$@"
 
 load-config
 
-helm uninstall -n deis -y deis-dev;
+helm uninstall -n deis -y "${WORKFLOW_CHART}";

@@ -35,3 +35,5 @@ if [ ! -z "${JENKINS_URL}" ]; then
 fi
 
 export PATH="${CHART_MATE_ENV_ROOT}/.bin:${GOOGLE_SDK_DIR}/bin:$PATH"
+
+export WORKFLOW_CHART="${WORKFLOW_CHART:-workflow-dev}"
