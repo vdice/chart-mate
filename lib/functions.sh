@@ -31,21 +31,20 @@ source ${RERUN_MODULE_DIR}/lib/deis.sh
 function exit-trap {
   set +e
 
-  log-warn "Retrieving information about the kubernetes/deis cluster before exiting..."
-
-  local timestamp="$(date +%Y-%m-%d+%H:%M:%S)"
+  log-info "Retrieving information about the kubernetes/deis cluster before exiting..."
 
   if command -v kubectl &> /dev/null; then
-    kubectl get po,rc,svc -a --namespace=deis &> "${DEIS_LOG_DIR}/statuses-${timestamp}.log"
+    kubectl get po,rc,svc -a --namespace=deis &> "${DEIS_LOG_DIR}/statuses.log"
 
     local components="deis-builder deis-database deis-minio deis-registry deis-router deis-controller"
     local component
     for component in ${components}; do
-      kubectl describe po -l app=${component} --namespace=deis &> "${DEIS_LOG_DIR}/${component}-describe-${timestamp}.log"
       local podname=$(kubectl get po --namespace=deis | awk '{print $1}' | grep "${component}")
-      kubectl logs "${podname}" --namespace=deis > "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
-      echo "----------------------------" >> "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
-      kubectl logs "${podname}" -p --namespace=deis >> "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
+      kubectl describe po "${podname}" --namespace=deis &> "${DEIS_LOG_DIR}/${component}.describe"
+      log-info "Retrieving logs from ${podname}" >> "${DEIS_LOG_DIR}/${component}.log"
+      kubectl logs "${podname}" --namespace=deis >> "${DEIS_LOG_DIR}/${component}.log"
+      log-info "Retrieving previous instance logs from ${podname}" >> "${DEIS_LOG_DIR}/${component}.log"
+      kubectl logs "${podname}" -p --namespace=deis >> "${DEIS_LOG_DIR}/${component}.log"
     done
   fi
 }
@@ -67,11 +66,11 @@ function log-lifecycle {
 }
 
 function log-info {
-  rerun_log "--> ${@}"
+  rerun_log "-----> ${@}"
 }
 
 function log-warn {
-  rerun_log warn "--> ${@}"
+  rerun_log warn " !!!   ${@}"
 }
 
 function save-environment {
