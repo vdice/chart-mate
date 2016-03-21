@@ -43,8 +43,9 @@ function exit-trap {
     for component in ${components}; do
       kubectl describe po -l app=${component} --namespace=deis &> "${DEIS_LOG_DIR}/${component}-describe-${timestamp}.log"
       local podname=$(kubectl get po --namespace=deis | awk '{print $1}' | grep "${component}")
-      kubectl logs "${podname}" --namespace=deis > "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
-      echo "----------------------------" >> "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
+      log-info "Retrieving logs from ${podname}" >> "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
+      kubectl logs "${podname}" --namespace=deis >> "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
+      log-info "Retrieving previous instance logs from ${podname}" >> "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
       kubectl logs "${podname}" -p --namespace=deis >> "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
     done
   fi
