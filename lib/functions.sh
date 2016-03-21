@@ -31,7 +31,7 @@ source ${RERUN_MODULE_DIR}/lib/deis.sh
 function exit-trap {
   set +e
 
-  log-warn "Retrieving information about the kubernetes/deis cluster before exiting..."
+  log-info "Retrieving information about the kubernetes/deis cluster before exiting..."
 
   local timestamp="$(date +%Y-%m-%d+%H:%M:%S)"
 
