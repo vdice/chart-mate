@@ -27,7 +27,7 @@ function gke::config {
 
 function gke::create-cluster {
   log-lifecycle "Creating cluster ${K8S_CLUSTER_NAME}"
-  gcloud -q container clusters create "${K8S_CLUSTER_NAME}"
+  gcloud -q container clusters create "${K8S_CLUSTER_NAME}" -m n1-standard-2
   gcloud -q config set container/cluster "${K8S_CLUSTER_NAME}"
   gcloud -q container clusters get-credentials "${K8S_CLUSTER_NAME}"
 }
