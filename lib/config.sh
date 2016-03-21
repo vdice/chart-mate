@@ -40,9 +40,9 @@ export WORKFLOW_CHART="${WORKFLOW_CHART:-workflow-dev}"
 
 
 if [ -z "${WORKSPACE}" ]; then
-  export DEIS_LOG_DIR="${WORKSPACE}/logs/${BUILD_NUMBER}"
-else
   export DEIS_LOG_DIR="${HOME}/logs/${BUILD_NUMBER}"
+else
+  export DEIS_LOG_DIR="${WORKSPACE}/logs/${BUILD_NUMBER}"
 fi
 
 mkdir -p ${DEIS_LOG_DIR}
