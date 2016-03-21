@@ -37,3 +37,12 @@ fi
 export PATH="${CHART_MATE_ENV_ROOT}/.bin:${GOOGLE_SDK_DIR}/bin:$PATH"
 
 export WORKFLOW_CHART="${WORKFLOW_CHART:-workflow-dev}"
+
+
+if [ -z "${WORKSPACE}" ]; then
+  export DEIS_LOG_DIR="${HOME}/logs"
+else
+  export DEIS_LOG_DIR="${WORKSPACE}/logs/${BUILD_NUMBER}"
+fi
+
+mkdir -p "${DEIS_LOG_DIR}"

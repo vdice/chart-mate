@@ -57,9 +57,9 @@ rerun_options_parse "$@"
 
 load-config
 
-rm -rf ${HOME}/.helm
+rm -rf ${WORKSPACE}/.helm
 helm doctor
-mkdir -p ${HOME}/.helm/cache/charts/deis
+mkdir -p ${WORKSPACE}/.helm/cache/charts/deis
 
 if [ ! -z $CI ]; then
   echo "INJECTING VERSIONS!"
@@ -80,6 +80,8 @@ if [ ! -z $CI ]; then
 else
   helm repo add deis https://github.com/deis/charts.git || true
 fi
+
+kubectl get events --all-namespaces -w &> ${DEIS_LOG_DIR}/k8s-events.log
 
 helm fetch deis/"${WORKFLOW_CHART}"
 helm generate "${WORKFLOW_CHART}"
