@@ -57,4 +57,5 @@ rerun_options_parse "$@"
 
 load-config
 
+kubectl delete rc slugruntesting slugbuildtesting
 helm uninstall -n deis -y "${WORKFLOW_CHART}";
