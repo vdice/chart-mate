@@ -71,7 +71,7 @@ function log-info {
 }
 
 function log-warn {
-  rerun_log warn "-----> ${@}"
+  rerun_log warn " !!!   ${@}"
 }
 
 function save-environment {
