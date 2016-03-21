@@ -36,17 +36,13 @@ function exit-trap {
   local timestamp="$(date +%Y-%m-%d+%H:%M:%S)"
 
   if command -v kubectl &> /dev/null; then
-    mkdir -p "logs"
-
-    kubectl get po,rc,svc -a --namespace=deis &> "logs/statuses-${timestamp}.log"
+    kubectl get po,rc,svc -a --namespace=deis &> "logs/${BUILD_NUMBER}/statuses-${timestamp}.log"
 
     local components="deis-router deis-builder deis-database deis-minio deis-registry deis-router deis-controller"
     local component
     for component in ${components}; do
-      kubectl describe po -l app=${component} --namespace=deis &> "logs/${component}-describe-${timestamp}.log"
+      kubectl describe po -l app=${component} --namespace=deis &> "logs/${BUILD_NUMBER}/${component}-describe-${timestamp}.log"
     done
-
-    mv k8s-events.log logs
   fi
 }
 
