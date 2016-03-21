@@ -67,11 +67,11 @@ function log-lifecycle {
 }
 
 function log-info {
-  rerun_log "--> ${@}"
+  rerun_log "-----> ${@}"
 }
 
 function log-warn {
-  rerun_log warn "--> ${@}"
+  rerun_log warn "-----> ${@}"
 }
 
 function save-environment {
