@@ -33,20 +33,18 @@ function exit-trap {
 
   log-info "Retrieving information about the kubernetes/deis cluster before exiting..."
 
-  local timestamp="$(date +%Y-%m-%d+%H:%M:%S)"
-
   if command -v kubectl &> /dev/null; then
-    kubectl get po,rc,svc -a --namespace=deis &> "${DEIS_LOG_DIR}/statuses-${timestamp}.log"
+    kubectl get po,rc,svc -a --namespace=deis &> "${DEIS_LOG_DIR}/statuses.log"
 
     local components="deis-builder deis-database deis-minio deis-registry deis-router deis-controller"
     local component
     for component in ${components}; do
-      kubectl describe po -l app=${component} --namespace=deis &> "${DEIS_LOG_DIR}/${component}-describe-${timestamp}.log"
       local podname=$(kubectl get po --namespace=deis | awk '{print $1}' | grep "${component}")
-      log-info "Retrieving logs from ${podname}" >> "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
-      kubectl logs "${podname}" --namespace=deis >> "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
-      log-info "Retrieving previous instance logs from ${podname}" >> "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
-      kubectl logs "${podname}" -p --namespace=deis >> "${DEIS_LOG_DIR}/${component}-logs-${timestamp}.log"
+      kubectl describe po "${podname}" --namespace=deis &> "${DEIS_LOG_DIR}/${component}-describe.log"
+      log-info "Retrieving logs from ${podname}" >> "${DEIS_LOG_DIR}/${component}-logs.log"
+      kubectl logs "${podname}" --namespace=deis >> "${DEIS_LOG_DIR}/${component}-logs.log"
+      log-info "Retrieving previous instance logs from ${podname}" >> "${DEIS_LOG_DIR}/${component}-logs.log"
+      kubectl logs "${podname}" -p --namespace=deis >> "${DEIS_LOG_DIR}/${component}-logs.log"
     done
   fi
 }
