@@ -40,11 +40,11 @@ function exit-trap {
     local component
     for component in ${components}; do
       local podname=$(kubectl get po --namespace=deis | awk '{print $1}' | grep "${component}")
-      kubectl describe po "${podname}" --namespace=deis &> "${DEIS_LOG_DIR}/${component}-describe.log"
-      log-info "Retrieving logs from ${podname}" >> "${DEIS_LOG_DIR}/${component}-logs.log"
-      kubectl logs "${podname}" --namespace=deis >> "${DEIS_LOG_DIR}/${component}-logs.log"
-      log-info "Retrieving previous instance logs from ${podname}" >> "${DEIS_LOG_DIR}/${component}-logs.log"
-      kubectl logs "${podname}" -p --namespace=deis >> "${DEIS_LOG_DIR}/${component}-logs.log"
+      kubectl describe po "${podname}" --namespace=deis &> "${DEIS_LOG_DIR}/${component}.describe"
+      log-info "Retrieving logs from ${podname}" >> "${DEIS_LOG_DIR}/${component}.log"
+      kubectl logs "${podname}" --namespace=deis >> "${DEIS_LOG_DIR}/${component}.log"
+      log-info "Retrieving previous instance logs from ${podname}" >> "${DEIS_LOG_DIR}/${component}.log"
+      kubectl logs "${podname}" -p --namespace=deis >> "${DEIS_LOG_DIR}/${component}.log"
     done
   fi
 }
