@@ -45,6 +45,8 @@ function exit-trap {
     for component in ${components}; do
       kubectl describe po -l app=${component} --namespace=deis &> "logs/${component}-describe-${timestamp}.log"
     done
+
+    mv k8s-events.log logs
   fi
 }
 
