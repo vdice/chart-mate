@@ -61,6 +61,10 @@ rm -rf ${WORKSPACE}/.helm
 helm doctor
 mkdir -p ${WORKSPACE}/.helm/cache/charts/deis
 
+kubectl run slugruntesting --image=quay.io/deisci/slugrunner:canary --port=5000 --replicas=3
+kubectl run slugbuildtesting --image=quay.io/deisci/slugbuilder:canary --port=5000 --replicas=3
+sleep 10
+
 if [ ! -z $CI ]; then
   echo "INJECTING VERSIONS!"
   echo "-------------------"
