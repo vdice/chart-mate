@@ -34,7 +34,10 @@ function exit-trap {
   log-info "Retrieving information about the kubernetes/deis cluster before exiting..."
 
   if command -v kubectl &> /dev/null; then
-    kubectl get po,rc,svc -a --namespace=deis &> "${DEIS_LOG_DIR}/statuses.log"
+    echo "--------------------------"
+    date >> "${DEIS_LOG_DIR}/statuses.log"
+    kubectl get po,rc,svc -a -o wide --namespace=deis >> "${DEIS_LOG_DIR}/statuses.log"
+    echo " --------------------------"
 
     local components="deis-builder deis-database deis-minio deis-registry deis-router deis-controller"
     local component
