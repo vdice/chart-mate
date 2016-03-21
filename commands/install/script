@@ -81,7 +81,7 @@ else
   helm repo add deis https://github.com/deis/charts.git || true
 fi
 
-kubectl get events --all-namespaces -w &> ${DEIS_LOG_DIR}/k8s-events.log
+kubectl get events --all-namespaces -w > ${DEIS_LOG_DIR}/k8s-events.log 2>&1 &
 
 helm fetch deis/"${WORKFLOW_CHART}"
 helm generate "${WORKFLOW_CHART}"
