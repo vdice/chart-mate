@@ -38,7 +38,7 @@ function exit-trap {
   if command -v kubectl &> /dev/null; then
     kubectl get po,rc,svc -a --namespace=deis &> "${DEIS_LOG_DIR}/statuses-${timestamp}.log"
 
-    local components="deis-router deis-builder deis-database deis-minio deis-registry deis-router deis-controller"
+    local components="deis-builder deis-database deis-minio deis-registry deis-router deis-controller"
     local component
     for component in ${components}; do
       kubectl describe po -l app=${component} --namespace=deis &> "${DEIS_LOG_DIR}/${component}-describe-${timestamp}.log"
