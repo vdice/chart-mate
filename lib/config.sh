@@ -6,17 +6,17 @@ export HELM_ARTIFACT_REPO="${HELM_ARTIFACT_REPO:-helm-ci}"
 export WORKFLOW_CHART="${WORKFLOW_CHART:-workflow-dev}"
 export HELM_HOME="${MY_HOME}/.helm"
 
-# chart mate defaults
-CHART_MATE_ENV_ROOT="${CHART_MATE_HOME}/${K8S_CLUSTER_NAME}"
-BIN_DIR="${CHART_MATE_ENV_ROOT}/.bin"
-export SECRETS_DIR="${CHART_MATE_ENV_ROOT}"
-
 # cluster defaults
 GOOGLE_SDK_DIR="${HOME}/google-cloud-sdk"
 CLUSTER_NAME="${CLUSTER_NAME:-helm-testing}"
 GCLOUD_PROJECT_ID="${GCLOUD_PROJECT_ID:-${CLUSTER_NAME}}"
 K8S_ZONE="${K8S_ZONE:-us-central1-b}"
 K8S_CLUSTER_NAME="${K8S_CLUSTER_NAME:-${GCLOUD_PROJECT_ID}-$(openssl rand -hex 2)}"
+
+# chart mate defaults
+CHART_MATE_ENV_ROOT="${CHART_MATE_HOME}/${K8S_CLUSTER_NAME}"
+BIN_DIR="${CHART_MATE_ENV_ROOT}/.bin"
+export SECRETS_DIR="${CHART_MATE_ENV_ROOT}"
 
 # timing defaults
 export HEALTHCHECK_TIMEOUT_SEC=120
