@@ -50,9 +50,6 @@ load-config
 log-info "Warming the docker cache in the cluster..."
 kubectl run slugruntesting --image=quay.io/deisci/slugrunner:canary --port=5000 --replicas=3
 kubectl run slugbuildtesting --image=quay.io/deisci/slugbuilder:canary --port=5000 --replicas=3
-log-info "Waiting 10 seconds..."
-sleep 10
-kubectl delete rc slugruntesting slugbuildtesting
 
 kubectl get events --all-namespaces -w > ${K8S_EVENT_LOG} 2>&1 &
 
@@ -63,6 +60,8 @@ helm repo add deis https://github.com/deis/charts.git || true
 helm fetch "deis/${WORKFLOW_CHART}"
 helm generate "${WORKFLOW_CHART}"
 helm install "${WORKFLOW_CHART}"
+
+kubectl delete rc slugruntesting slugbuildtesting
 
 if [ ! -z $DEIS_LOGGER ]; then
   helm fetch deis/deis-logger
