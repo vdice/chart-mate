@@ -56,13 +56,13 @@ function exit-trap {
 
     # describe all non deis and kube-system pods we saw during test
     egrep -v "^(deis|kube-system)" "${K8S_EVENT_LOG}" | \
-      awk -v deis_log_dir=${DEIS_LOG_DIR} '/Pod/ { printf "kubectl --namespace=%s describe pod %s > %s/%s.describe.log\n", $1, $5, deis_log_dir, $5 }' | sort | uniq
-      xargs -L1
+      awk -v deis_log_dir=${DEIS_LOG_DIR} '/Pod/ { printf "--namespace=%s describe pod %s > %s/%s.describe.log\n", $1, $5, deis_log_dir, $5 }' | sort | uniq
+      xargs -L1 kubectl
 
     # pull all non deis or kube-system logs from pods we saw during test
     egrep -v "^(deis|kube-system)" "${K8S_EVENT_LOG}" | \
-      awk -v deis_log_dir=${DEIS_LOG_DIR} '/Pod/ { printf "kubectl --namespace=%s logs %s --previous > %s/%s.log\n", $1, $5, deis_log_dir, $5 }' | sort | uniq
-      xargs -L1
+      awk -v deis_log_dir=${DEIS_LOG_DIR} '/Pod/ { printf "--namespace=%s logs %s --previous > %s/%s.previous.log\n", $1, $5, deis_log_dir, $5 }' | sort | uniq
+      xargs -L1 kubectl
   fi
 }
 
