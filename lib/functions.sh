@@ -1,8 +1,6 @@
-# Shell functions for the chart-mate module.
 #/ usage: source RERUN_MODULE_DIR/lib/functions.sh command
 #
 
-# Read rerun's public functions
 . $RERUN || {
   echo >&2 "ERROR: Failed sourcing rerun function library: \"$RERUN\""
   return 1
@@ -20,15 +18,17 @@ then
   }
 fi
 
-# - - -
-# Your functions declared here.
-# - - -
+export MY_HOME="${WORKSPACE:-${HOME}}"
+export CHART_MATE_HOME="${MY_HOME}/.chart-mate"
 
+trap "error-trap" ERR
+
+source ${RERUN_MODULE_DIR}/lib/log.sh
 source ${RERUN_MODULE_DIR}/lib/gke.sh
 source ${RERUN_MODULE_DIR}/lib/helm.sh
 source ${RERUN_MODULE_DIR}/lib/deis.sh
 
-function exit-trap {
+function retrieve-deis-info {
   set +e
 
   log-info "Retrieving information about the kubernetes/deis cluster before exiting..."
@@ -37,7 +37,7 @@ function exit-trap {
     echo "--------------------------" >> "${DEIS_LOG_DIR}/statuses.log"
     date >> "${DEIS_LOG_DIR}/statuses.log"
     kubectl get po,rc,svc -a -o wide --namespace=deis >> "${DEIS_LOG_DIR}/statuses.log"
-    echo " --------------------------" >> "${DEIS_LOG_DIR}/statuses.log"
+    echo "--------------------------" >> "${DEIS_LOG_DIR}/statuses.log"
 
     local components="deis-builder deis-database deis-minio deis-registry deis-router deis-controller"
     local component
@@ -69,6 +69,30 @@ function exit-trap {
   fi
 }
 
+function error-trap {
+  backtrace
+  exit 1
+}
+
+function backtrace {
+  xtrace-off
+  local -i start=$(( ${1:-0} + 1 ))
+  local -i end=${#BASH_SOURCE[@]}
+
+  echo
+  local -i i=0
+  local -i j=0
+  for ((i=start; i < end; i++)); do
+    j=$(( i - 1 ))
+    local function="${FUNCNAME[$i]}"
+    local file="${BASH_SOURCE[$i]}"
+    local line="${BASH_LINENO[$j]}"
+    printf "${_magenta}%35s() ${_cyan}%s${_normal}:%d\n" \
+      "${function}" "${file}" "${line}"
+  done
+  xtrace-reset
+}
+
 function load-config {
   load-environment
   source "${RERUN_MODULE_DIR}/lib/config.sh"
@@ -81,35 +105,23 @@ function move-files {
   rsync -av . ${HOME}/.helm/cache/charts/ --exclude='.git/'
 }
 
-function log-lifecycle {
-  rerun_log "${bldblu}==> ${@}...${txtrst}"
-}
-
-function log-info {
-  rerun_log "-----> ${@}"
-}
-
-function log-warn {
-  rerun_log warn " !!!   ${@}"
-}
-
 function save-environment {
   log-lifecycle "Environment saved as ${K8S_CLUSTER_NAME}"
 
-  mkdir -p "${HOME}/.chart-mate"
-  cat > "${HOME}/.chart-mate/env" <<EOF
+  mkdir -p "${CHART_MATE_HOME}"
+  cat > "${CHART_MATE_HOME}/env" <<EOF
 export K8S_CLUSTER_NAME="${K8S_CLUSTER_NAME}"
 EOF
 }
 
 function load-environment {
-  if [ -f "${HOME}/.chart-mate/env" ]; then
-    source "${HOME}/.chart-mate/env"
+  if [ -f "${CHART_MATE_HOME}/env" ]; then
+    source "${CHART_MATE_HOME}/env"
   fi
 }
 
 function delete-environment {
-  rm -f "${HOME}/.chart-mate/env"
+  rm -f "${CHART_MATE_HOME}/env"
 }
 
 function bumpver-if-set {
@@ -118,7 +130,7 @@ function bumpver-if-set {
   local version="${3}"
 
   if [ ! -z "${version}" ]; then
-    local version_bumper="${RERUN_MODULE_DIR}/lib/chart-version-bumper.sh"
+    local version_bumper="${RERUN_MODULE_DIR}/bin/chart-version-bumper.sh"
     "${version_bumper}" "${chart}" "${component}" "${version}"
   else
     echo "No version set for ${chart}: ${component}"
