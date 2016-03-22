@@ -61,7 +61,7 @@ helm fetch "deis/${WORKFLOW_CHART}"
 helm generate "${WORKFLOW_CHART}"
 helm install "${WORKFLOW_CHART}"
 
-# kubectl delete rc slugruntesting slugbuildtesting
+kubectl delete deployment slugruntesting slugbuildtesting
 
 if [ ! -z $DEIS_LOGGER ]; then
   helm fetch deis/deis-logger
