@@ -10,27 +10,23 @@ cluster.
 Quickstart
 ----------
 
-1. Install `rerun`
-
-  ```
-  git clone https://github.com/rerun/rerun.git
-  cd rerun
-  export RERUN_PATH="$(pwd)"
-  export PATH="$RERUN_PATH:$PATH"
-  ```
-
-2. Get `chart-mate`
+1. Get `chart-mate`
 
   ```
   git clone https://github.com/sgoings/chart-mate.git
   cd chart-mate
-  export CHART_MATE_PATH="$(pwd)"
   ```
 
-3. Add `chart-mate` to `rerun`'s module path
+2. Run the `hacking.sh` script
 
   ```
-  export RERUN_MODULES="${CHART_MATE_PATH}:${RERUN_PATH}/modules"
+  ./hacking.sh
+  ```
+
+3. Source the `hacking.sh` script
+
+  ```
+  source hacking.sh
   ```
 
 4. Run `rerun chart-mate`!
