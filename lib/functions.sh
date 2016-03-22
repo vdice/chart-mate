@@ -34,10 +34,10 @@ function exit-trap {
   log-info "Retrieving information about the kubernetes/deis cluster before exiting..."
 
   if command -v kubectl &> /dev/null; then
-    echo "--------------------------"
+    echo "--------------------------" >> "${DEIS_LOG_DIR}/statuses.log"
     date >> "${DEIS_LOG_DIR}/statuses.log"
     kubectl get po,rc,svc -a -o wide --namespace=deis >> "${DEIS_LOG_DIR}/statuses.log"
-    echo " --------------------------"
+    echo " --------------------------" >> "${DEIS_LOG_DIR}/statuses.log"
 
     local components="deis-builder deis-database deis-minio deis-registry deis-router deis-controller"
     local component
@@ -50,23 +50,22 @@ function exit-trap {
       kubectl logs "${podname}" -p --namespace=deis >> "${DEIS_LOG_DIR}/${component}.log"
     done
 
-    # dump all the pods we saw
-    egrep -v "^(deis|kube-system)" "${K8S_EVENT_LOG}" | \
-      awk '/Pod/ { printf "namespace=%s pod=%s\n", $1, $5 }' | sort | uniq
+    # exclude deis | kube-system namespace and anything that doesn't
+    # start with an alphanumeric char (saw events without namespaces)
+    # egrep -v "^(deis|kube-system|[^[:alnum:]])" "${K8S_EVENT_LOG}" | \
+    #   awk '/ Pod / { printf "%s %s : %s\n", $1, $5, $0 }' | sort | uniq
 
-    # describe all non deis and kube-system pods we saw during test
-    egrep -v "^(deis|kube-system)" "${K8S_EVENT_LOG}" | \
-      awk -v deis_log_dir=${DEIS_LOG_DIR} '/Pod/ { printf "--namespace=%s describe pod %s > %s/%s.describe.log\n", $1, $5, deis_log_dir, $5 }' | sort | uniq
-      xargs -L1 kubectl
+    log-info "Describing all pods seen during test"
+    egrep -v "^(deis|kube-system|[^[:alnum:]])" "${K8S_EVENT_LOG}" | \
+      awk -v deis_log_dir=${DEIS_LOG_DIR} '/ Pod / { printf "kubectl describe pod %s --namespace=%s &> %s/%s.describe.log\n", $5, $1, deis_log_dir, $5 }' | \
+      sort | uniq > ${DEIS_LOG_DIR}/test-pod-describe.sh
+    sh ${DEIS_LOG_DIR}/test-pod-describe.sh
 
-    # pull all non deis or kube-system logs from pods we saw during test
-    egrep -v "^(deis|kube-system)" "${K8S_EVENT_LOG}" | \
-      awk -v deis_log_dir=${DEIS_LOG_DIR} '/Pod/ { printf "--namespace=%s logs %s --previous > %s/%s.previous.log\n", $1, $5, deis_log_dir, $5 }' | sort | uniq
-      xargs -L1 kubectl
-
-    egrep -v "^(deis|kube-system)" "${K8S_EVENT_LOG}" | \
-      awk -v deis_log_dir=${DEIS_LOG_DIR} '/Pod/ { printf "--namespace=%s logs %s > %s/%s.log\n", $1, $5, deis_log_dir, $5 }' | sort | uniq
-      xargs -L1 kubectl
+    log-info "Fetching pod logs from test run..."
+    egrep -v "^(deis|kube-system|[^[:alnum:]])" "${K8S_EVENT_LOG}" | \
+      awk -v deis_log_dir=${DEIS_LOG_DIR} '/ Pod / { printf "kubectl logs %s --namespace=%s &> %s/%s.log\n", $5, $1, deis_log_dir, $5 }' | \
+      sort | uniq > ${DEIS_LOG_DIR}/test-pod-logs.sh
+    sh ${DEIS_LOG_DIR}/test-pod-logs.sh
   fi
 }
 
