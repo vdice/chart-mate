@@ -4,3 +4,4 @@
 /_scripts/ci/bintray-ci.json
 /tests/rerun
 /logs
+/.rerun
