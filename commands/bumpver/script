@@ -9,15 +9,15 @@
 # The `command` and `usage` comments describe the command
 # and show its options.
 #
-#/ command: chart-mate:install: "install deis with helm"
-#/ usage: rerun chart-mate:install [options]
+#/ command: chart-mate:bumpver: "change versions of components"
+#/ usage: rerun chart-mate:bumpver [options]
 
 # Load common functions
 # ---------------------
 
 # Load the function library for this module.
 # This loads rerun functions, too.
-. $RERUN_MODULE_DIR/lib/functions.sh install || {
+. $RERUN_MODULE_DIR/lib/functions.sh bumpver || {
   echo >&2 "Failed loading function library." ; exit 1 ;
 }
 
@@ -47,27 +47,23 @@ rerun_options_parse "$@"
 
 load-config
 
-log-info "Warming the docker cache in the cluster..."
-kubectl run slugruntesting --image=quay.io/deisci/slugrunner:canary --port=5000 --replicas=3
-kubectl run slugbuildtesting --image=quay.io/deisci/slugbuilder:canary --port=5000 --replicas=3
-log-info "Waiting 10 seconds..."
-sleep 10
-kubectl delete rc slugruntesting slugbuildtesting
-
-kubectl get events --all-namespaces -w > ${K8S_EVENT_LOG} 2>&1 &
-
 helm doctor
+
 log-info "Adding deis helm repo..."
 helm repo add deis https://github.com/deis/charts.git || true
 
-helm fetch "deis/${WORKFLOW_CHART}"
-helm generate "${WORKFLOW_CHART}"
-helm install "${WORKFLOW_CHART}"
-
-if [ ! -z $DEIS_LOGGER ]; then
-  helm fetch deis/deis-logger
-  helm install deis-logger
-  # re-jigger deis-controller pods so it picks up the logger's settings
-  kubectl --namespace=deis scale --replicas=0 replicationcontroller deis-controller
-  kubectl --namespace=deis scale --replicas=1 replicationcontroller deis-controller
-fi
+log-info "INJECTING VERSIONS!"
+log-info "-------------------"
+bumpver-if-set "deis-logger" "fluentd" "${FLUENTD_GIT_SHA}"
+bumpver-if-set "deis-logger" "logger" "${LOGGER_GIT_SHA}"
+bumpver-if-set "${WORKFLOW_CHART}" "builder" "${BUILDER_GIT_SHA}"
+bumpver-if-set "${WORKFLOW_CHART}" "minio" "${MINIO_GIT_SHA}"
+bumpver-if-set "${WORKFLOW_CHART}" "postgres" "${POSTGRES_GIT_SHA}"
+bumpver-if-set "${WORKFLOW_CHART}" "registry" "${REGISTRY_GIT_SHA}"
+bumpver-if-set "${WORKFLOW_CHART}" "router" "${ROUTER_GIT_SHA}"
+bumpver-if-set "${WORKFLOW_CHART}" "controller" "${CONTROLLER_GIT_SHA}"
+bumpver-if-set "${WORKFLOW_CHART}" "slugbuilder" "${SLUGBUILDER_GIT_SHA}"
+bumpver-if-set "${WORKFLOW_CHART}" "slugrunner" "${SLUGRUNNER_GIT_SHA}"
+bumpver-if-set "${WORKFLOW_CHART}" "dockerbuilder" "${DOCKERBUILDER_GIT_SHA}"
+log-info "-------------------"
+rsync -av . "${HELM_HOME}/cache/deis/" > /dev/null

@@ -21,16 +21,6 @@
   echo >&2 "Failed loading function library." ; exit 1 ;
 }
 
-# Error handling
-# ---------------
-
-# This script is designed to _fail-fast_.
-
-# Trap errors and exit. The call to `rerun_die` will print the
-# the error message and exit with the error command exit status.
-
-trap 'rerun_die $? "*** command failed: chart-mate:test. ***"' ERR
-
 # Run [set] `nounset` to treat unset variables as errors. Set [pipefail]
 # so a pipeline return status is the value of the last
 # (rightmost) command to exit with non-zero status.
@@ -57,12 +47,12 @@ rerun_options_parse "$@"
 
 load-config
 
-trap exit-trap EXIT
+trap "retrieve-deis-info" EXIT
 
-mkdir -p ~/.helm/cache/deis/deis-tests
-
+mkdir -p "${HELM_HOME}/cache/deis/deis-tests"
 helm fetch deis/deis-tests
-helm uninstall -n deis -y deis-tests; helm install deis-tests
+helm uninstall -n deis -y deis-tests
+helm install deis-tests
 
 wait-for-pod "deis-tests"
 
