@@ -34,6 +34,8 @@ else
 fi
 mkdir -p "${DEIS_LOG_DIR}"
 
+export K8S_EVENT_LOG="${DEIS_LOG_DIR}/k8s-events.log"
+
 # path setup
 export PATH="${CHART_MATE_ENV_ROOT}/.bin:${GOOGLE_SDK_DIR}/bin:$PATH"
 
