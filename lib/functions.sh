@@ -273,7 +273,8 @@ function wait-for-all-pods {
 
 function return-pod-exit-code {
   local name="${1}"
-  local namespace="${2:-deis}"
+  local container="${2}"
+  local namespace="${3:-deis}"
   local status
 
   log-lifecycle "Waiting for pod exit code..." 1>&2
@@ -286,6 +287,9 @@ function return-pod-exit-code {
   while [ ${waited_time} -lt ${timeout_secs} ]; do
 
     command_output="$(kubectl get po "${name}" -a --namespace="${namespace}" -o json | jq -r '.status.containerStatuses[0].state.terminated.exitCode')"
+    if [ "${container}" != "" ]; then
+      command_output="$(kubectl get po "${name}" -a --namespace="${namespace}" -o json | jq -r --arg container "${container}" '.status.containerStatuses[] | select(.name==$container) | .state.terminated.exitCode')"
+    fi
     if [ "${command_output}" != "null" ]; then
       echo ${command_output}
       return 0

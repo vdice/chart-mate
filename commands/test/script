@@ -60,7 +60,7 @@ wait-for-pod "deis-tests"
 # as there's a timeout on kubectl logs -f that we
 # sometimes run into
 iterations=0
-while ! return-pod-exit-code "deis-tests" &> /dev/null; do
+while ! return-pod-exit-code "deis-tests" "deis-e2e" &> /dev/null; do
   log-info "Reloading kubectl logs (#${iterations})"
 
   kubectl --namespace=deis logs -c deis-e2e -f deis-tests || true
@@ -69,9 +69,9 @@ while ! return-pod-exit-code "deis-tests" &> /dev/null; do
 done
 
 echo "---------------------------------------------"
-return-pod-exit-code "deis-tests"
+return-pod-exit-code "deis-tests" "deis-e2e"
 
 log-info "retrieving junit.xml from the artifacts sidecar container"
 kubectl --namespace=deis exec -c artifacts deis-tests cat /root/junit.xml > "${DEIS_LOG_DIR}/junit.xml"
 
-exit $(return-pod-exit-code "deis-tests" 2>/dev/null)
+exit $(return-pod-exit-code "deis-tests" "deis-e2e" 2>/dev/null)
