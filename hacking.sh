@@ -7,4 +7,4 @@ if [ ! -d "$(pwd)/.rerun" ]; then
 fi
 
 export PATH="$(pwd)/.rerun:${PATH}"
-export RERUN_MODULES="$(pwd)/.rerun/modules:${CODE_DIR}/rerun-modules"
+export RERUN_MODULES="$(pwd)/.rerun/modules:$(dirname $(pwd))"
