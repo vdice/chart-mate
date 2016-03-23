@@ -323,6 +323,7 @@ function wait-for-http-status {
     command_output="$(curl -s -o /dev/null -w '%{http_code}' "${url}")"
     set -x
     if [ "${command_output}" == "401" ]; then
+      set +x
       log-info "Endpoint responding at ${url}."
       return 0
     fi
