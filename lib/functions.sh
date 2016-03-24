@@ -320,8 +320,8 @@ function wait-for-http-status {
   local command_output
   while [ ${waited_time} -lt ${timeout_secs} ]; do
 
-    command_output="$(curl -s -o /dev/null -w '%{http_code}' "${url}")"
     set -x
+    command_output="$(curl -sS -o /dev/null -w '%{http_code}' "${url}")"
     if [ "${command_output}" == "401" ]; then
       set +x
       log-info "Endpoint responding at ${url}."
