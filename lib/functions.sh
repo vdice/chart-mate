@@ -339,3 +339,15 @@ function wait-for-http-status {
     echo -n . 1>&2
   done
 }
+
+function rsync-no24 {
+  # During a backup rsync may issue the following warning:
+  # 'rsync warning: some files vanished before they could be transferred (code 24)''
+  # Here we prevent such an error from failing the command invoking it
+  rsync "$@"
+  e=$?
+  if test $e = 24; then
+    exit 0
+  fi
+  exit $e
+}

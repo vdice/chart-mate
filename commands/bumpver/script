@@ -66,4 +66,4 @@ bumpver-if-set "${WORKFLOW_CHART}" "slugbuilder" "${SLUGBUILDER_GIT_SHA}"
 bumpver-if-set "${WORKFLOW_CHART}" "slugrunner" "${SLUGRUNNER_GIT_SHA}"
 bumpver-if-set "${WORKFLOW_CHART}" "dockerbuilder" "${DOCKERBUILDER_GIT_SHA}"
 log-info "-------------------"
-rsync -av . "${HELM_HOME}/cache/deis/" > /dev/null
+rsync-no24 -av . "${HELM_HOME}/cache/deis/" > /dev/null
